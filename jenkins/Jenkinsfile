@@ -1,0 +1,46 @@
+pipeline {
+    agent any
+
+    environment {
+        APP_NAME = "color-app"
+        IMAGE_TAG = "${BUILD_NUMBER}"
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                git branch: 'master', url: 'https://github.com/<your-username>/end-to-end-devsecops-pipeline-java-app.git'
+            }
+        }
+
+        stage('Build') {
+            steps {
+                dir('app/colorapp') {
+                    sh 'mvn clean compile'
+                }
+            }
+        }
+
+        stage('Test') {
+            steps {
+                dir('app/colorapp') {
+                    sh 'mvn test'
+                }
+            }
+        }
+
+        stage('Package') {
+            steps {
+                dir('app/colorapp') {
+                    sh 'mvn clean package -DskipTests'
+                }
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                sh 'docker build -t ${APP_NAME}:${IMAGE_TAG} ./app'
+            }
+        }
+    }
+}
