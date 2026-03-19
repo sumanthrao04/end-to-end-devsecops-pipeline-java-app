@@ -9,7 +9,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git branch: 'master', url: 'https://github.com/<your-username>/end-to-end-devsecops-pipeline-java-app.git'
+                git branch: 'master', url: 'https://github.com/sumanthrao04/end-to-end-devsecops-pipeline-java-app.git'
             }
         }
 
