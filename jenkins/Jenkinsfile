@@ -2,10 +2,12 @@ pipeline {
     agent any
 
     tools {
-        jdk 'jdk21'
-        maven 'maven3'
-    } 
+        maven 'Maven-3.9'
+    }
+
     environment {
+        JAVA_HOME = '/usr/lib/jvm/java-21-openjdk-amd64'
+        PATH = "${JAVA_HOME}/bin:${env.PATH}"
         APP_NAME = "color-app"
         IMAGE_TAG = "${BUILD_NUMBER}"
     }
@@ -14,6 +16,16 @@ pipeline {
         stage('Checkout') {
             steps {
                 git branch: 'master', url: 'https://github.com/sumanthrao04/end-to-end-devsecops-pipeline-java-app.git'
+            }
+        }
+
+        stage('Check Java') {
+            steps {
+                sh 'which java'
+                sh 'java -version'
+                sh 'which javac'
+                sh 'javac -version'
+                sh 'mvn -version'
             }
         }
 
@@ -43,7 +55,7 @@ pipeline {
 
         stage('Build Docker Image') {
             steps {
-                sh 'docker build -t ${APP_NAME}:${IMAGE_TAG} ./app'
+                sh 'docker build -t ${APP_NAME}:${IMAGE_TAG} ./app/colorapp'
             }
         }
     }
